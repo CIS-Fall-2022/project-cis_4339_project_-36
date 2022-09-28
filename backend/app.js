@@ -37,8 +37,8 @@ const orgDataRoute  = require('./routes/orgData');
 
 //setup middle ware for routes
 app.use('/primaryData', primaryDataRoute);
-app.use('/eventData', eventsDataRoute)
-app.use('/orgData', orgDataRoute)
+app.use('/eventData', eventsDataRoute);
+app.use('/orgData', orgDataRoute);
 
 app.listen(PORT, () => {
   console.log("Server started listening on port : ", PORT);
