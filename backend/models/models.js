@@ -41,8 +41,8 @@ let primaryDataSchema = new Schema({
             type: String,
         }
     },
-    organizationID: {
-        type: Array
+    organization_id: {
+        type: String
     }
 }, {
     collection: 'primaryData',
@@ -83,8 +83,11 @@ let eventDataSchema = new Schema({
     description: {
         type: String,
     },
-    organizationID: {
-        type: Array
+    attendees: [{
+        type: String
+    }],
+    organization_id: {
+        type: String
     }
 }, {
     collection: 'eventData'
