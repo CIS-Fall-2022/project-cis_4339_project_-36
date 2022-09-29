@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router(); 
 
 //importing data model schemas
-let { primarydata } = require("../models/models"); 
-let { eventdata } = require("../models/models"); 
+let { primarydata } = require("../models/models");
+let { eventdata } = require("../models/models");
 
 //GET all entries
 router.get("/", (req, res, next) => { 
@@ -57,7 +57,13 @@ router.get("/search/", (req, res, next) => {
 
 //GET events for a single client
 router.get("/events/:id", (req, res, next) => { 
-    
+    primarydata.findById(req.params.id, (error, data) => {
+        if (error) {
+            return next(error);
+        } else {
+            return res.json(data);
+        }
+    })
 });
 
 //POST
@@ -91,5 +97,16 @@ router.put("/:id", (req, res, next) => {
         }
     );
 });
+
+//DELETE (deletes a client by ID)
+router.delete("/:id", (req, res) => {
+    primarydata.findOneAndDelete({_id: req.params.id},(err,result)=>{
+        if (err)
+            console.log(err);
+        else
+            res.json(result);
+    });
+});
+
 
 module.exports = router;
