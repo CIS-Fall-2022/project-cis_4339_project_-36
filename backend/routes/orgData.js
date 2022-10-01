@@ -3,6 +3,8 @@ const router = express.Router();
 
 //importing data model schemas
 let { orgdata } = require("../models/models");
+let { primarydata } = require("../models/models");
+let { eventdata } = require("../models/models");
 
 //GET all entries
 router.get("/", (req, res, next) => { 
@@ -27,6 +29,31 @@ router.get("/id/:id", (req, res, next) => {
         }
     })
 });
+
+//GET all clients of an organization (prob need edit)
+router.get("/all_clients/:id", (req, res, next) => {
+    primarydata.findById(req.params.id, (error, data) => {
+        if (error) {
+            return next(error);
+        }
+        else {
+            return res.json(data);
+        }
+    });
+});
+
+//GET all events of an organization (prob need edit)
+router.get("/all_events/:id", (req, res, next) => {
+    eventdata.findById(req.params.id, (error, data) => {
+        if (error) {
+            return next(error);
+        }
+        else {
+            res.json(data);
+        }
+    })
+});
+
 
 //POST
 router.post("/", (req, res, next) => { 
@@ -57,7 +84,7 @@ router.put("/:id", (req, res, next) => {
     );
 });
 
-//DELETE (deletes a org by ID)
+//DELETE (deletes an organization by ID)
 router.delete("/:id", (req, res) => {
     orgdata.findOneAndDelete({_id: req.params.id},(err,result)=>{
         if (err)
