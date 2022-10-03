@@ -19,17 +19,6 @@ router.get("/", (req, res, next) => {
     ).sort({ 'updatedAt': -1 }).limit(10);
 });
 
-//GET single entry by ID
-router.get("/id/:id", (req, res, next) => { 
-    orgdata.find({ _id: req.params.id }, (error, data) => {
-        if (error) {
-            return next(error)
-        } else {
-            res.json(data)
-        }
-    })
-});
-
 //GET all clients of an organization (prob need edit)
 router.get("/all_clients/:id", (req, res, next) => {
     primarydata.findById(req.params.id, (error, data) => {
@@ -54,8 +43,35 @@ router.get("/all_events/:id", (req, res, next) => {
     })
 });
 
+//GET single entry by ID
+router.get("/id/:id", (req, res, next) => { 
+    orgdata.find({ _id: req.params.id }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    })
+});
 
-//POST
+//GET Data for org using enviornment variable
+router.get("/current_org", (req, res, next) => { 
+    orgdata.find({ _id: process.env.ORG }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    })
+});
+
+//PUT Temporarily update enviornment variable until server restart
+router.put("/change_org", (req, res, next) => { 
+    process.env["ORG"] = req.body.org;
+    res.json({"status": "success"})
+});
+
+//POST Create an org
 router.post("/", (req, res, next) => { 
     orgdata.create( 
         req.body, 
