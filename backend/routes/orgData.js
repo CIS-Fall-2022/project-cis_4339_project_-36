@@ -41,12 +41,6 @@ router.get("/current_org", (req, res, next) => {
     })
 });
 
-//PUT Temporarily update enviornment variable until server restart
-router.put("/change_org", (req, res, next) => { 
-    process.env["ORG"] = req.body.org;
-    res.json({"status": "success"})
-});
-
 //POST Create an org
 router.post("/", (req, res, next) => { 
     orgdata.create( 
@@ -59,6 +53,12 @@ router.post("/", (req, res, next) => {
             }
         }
     );
+});
+
+//PUT Temporarily update enviornment variable until server restart
+router.put("/change_org", (req, res, next) => { 
+    process.env["ORG"] = req.body.org;
+    res.json({"status": "success"})
 });
 
 //PUT update (make sure req body doesn't have the id)
