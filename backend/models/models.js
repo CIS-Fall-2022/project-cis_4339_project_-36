@@ -42,7 +42,8 @@ let primaryDataSchema = new Schema({
         }
     },
     organization_id: {
-        type: String
+        type: String,
+        required: true
     }
 }, {
     collection: 'primaryData',
