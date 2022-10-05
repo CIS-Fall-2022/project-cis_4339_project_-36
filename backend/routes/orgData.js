@@ -19,30 +19,6 @@ router.get("/", (req, res, next) => {
     ).sort({ 'updatedAt': -1 }).limit(10);
 });
 
-//GET all clients of an organization (prob need edit)
-router.get("/all_clients/:id", (req, res, next) => {
-    primarydata.findById(req.params.id, (error, data) => {
-        if (error) {
-            return next(error);
-        }
-        else {
-            return res.json(data);
-        }
-    });
-});
-
-//GET all events of an organization (prob need edit)
-router.get("/all_events/:id", (req, res, next) => {
-    eventdata.findById(req.params.id, (error, data) => {
-        if (error) {
-            return next(error);
-        }
-        else {
-            res.json(data);
-        }
-    })
-});
-
 //GET single entry by ID
 router.get("/id/:id", (req, res, next) => { 
     orgdata.find({ _id: req.params.id }, (error, data) => {
