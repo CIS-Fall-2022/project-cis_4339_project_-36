@@ -69,6 +69,9 @@ router.get("/events/:id", (req, res, next) => {
     });
 });
 
+//GET number of clients per Event
+
+
 //POST
 router.post("/", (req, res, next) => { 
     // Setting the organization ID of the added client to be the organization of the current organziation instance

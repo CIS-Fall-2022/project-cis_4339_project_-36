@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //importing data model schemas
-let { eventdata } = require("../models/models"); 
+let { primarydata, eventdata, orgdata } = require("../models/models");
 
 //GET all entries
 router.get("/", (req, res, next) => { 
