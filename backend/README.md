@@ -18,6 +18,3 @@ MONGO_URL = mongodb+srv://<username>:<password>@cluster0.abcdc.mongodb.net/dbnam
 ```
 npm start
 ```
-
-### API DOCUMENTATION CAN BE FOUND BELOW AT:
-https://documenter.getpostman.com/view/15329472/2s83zfRkVK
