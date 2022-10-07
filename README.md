@@ -15,7 +15,3 @@ Follow instructions in backend README
 cd frontend
 ```
 Follow instructions in frontend README
-
-
-### BACKEND API DOCUMENTATION CAN BE FOUND BELOW AT:
-https://documenter.getpostman.com/view/15329472/2s83zfRkVK
