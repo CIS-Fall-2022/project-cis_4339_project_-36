@@ -39,6 +39,8 @@ router.get("/current_org", (req, res, next) => {
     })
 });
 
+/*
+
 //POST Create an org
 router.post("/", (req, res, next) => { 
     orgdata.create( 
@@ -83,5 +85,7 @@ router.delete("/:id", (req, res) => {
             res.json(result);
     });
 });
+
+*/
 
 module.exports = router;
