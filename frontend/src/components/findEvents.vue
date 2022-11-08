@@ -72,10 +72,18 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr @click="editEvent(event._id)" v-for="event in queryData" :key="event._id">
+            <tr v-for="event in queryData" :key="event._id">
               <td class="p-2 text-left">{{ event.eventName }}</td>
               <td class="p-2 text-left">{{ formattedDate(event.date) }}</td>
               <td class="p-2 text-left">{{ event.address.line1 }}</td>
+              <!-- Button to Edit Event Data -->
+              <td>
+                <button @click="editEvent(event._id)" class="font-bold text-blue-600">Edit</button>
+              </td>
+              <!-- Button to Delete Event Data -->
+              <td>
+                <button @click.prevent="deleteEvent(event._id)" class="font-bold text-red-600">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -140,6 +148,23 @@ export default {
     editEvent(eventID) {
       this.$router.push({ name: "eventdetails", params: { id: eventID } });
     },
+    deleteEvent(eventID) {
+      // Set delete API to variable
+      let apiURL = `http://localhost:3000/eventData/${eventID}`;
+      // Set index of queryData of the event to be deleted to variable
+      let index = this.queryData.findIndex(i => i._id === eventID);
+
+      if (window.confirm("Are you sure you want to remove the event?")) {
+        // Call the backend API to delete event
+        axios.delete(apiURL).then(() => {
+          // Remove the event from the queryData
+          this.queryData.splice(index, 1);
+        }).catch(error => {
+          // Output error in console if error is thrown
+          console.log(error)
+        });
+      }
+    }
   },
 };
 </script>

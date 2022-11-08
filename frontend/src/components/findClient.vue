@@ -84,10 +84,18 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr @click="editClient(client._id)" v-for="client in queryData" :key="client._id">
+            <tr v-for="client in queryData" :key="client._id">
               <td class="p-2 text-left">{{ client.firstName + " " + client.lastName }}</td>
               <td class="p-2 text-left">{{ client.phoneNumbers[0].primaryPhone }}</td>
               <td class="p-2 text-left">{{ client.address.city }}</td>
+              <!-- Button to Edit Client Data -->
+              <td>
+                <button @click="editClient(client._id)" class="font-bold text-blue-600">Edit</button>
+              </td>
+              <!-- Button to Delete Client Data -->
+              <td>
+                <button @click.prevent="deleteClient(client._id)" class="font-bold text-red-600">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -148,6 +156,23 @@ export default {
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
     },
+    deleteClient(clientID) {
+      // Set delete API to variable
+      let apiURL = `http://localhost:3000/primaryData/${clientID}`;
+      // Set index of queryData of the client to be deleted to variable
+      let index = this.queryData.findIndex(i => i._id === clientID);
+
+      if (window.confirm("Are you sure you want to remove the client?")) {
+        // Call the backend API to delete client
+        axios.delete(apiURL).then(() => {
+          // Remove the client from the queryData
+          this.queryData.splice(index, 1);
+        }).catch(error => {
+          // Output error in console if error is thrown
+          console.log(error)
+        });
+      }
+    }
   },
 };
 </script>
