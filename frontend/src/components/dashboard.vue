@@ -9,13 +9,16 @@
         <h2 class="text-2xl font-bold text-red-700">List of Events and Number of Attendees (Clients) in the Last 2 Months</h2>
       </div>
       <div class="flex flex-col col-span-2">
+        <!-- Table of list of events and number of attendees in the last 2 months -->
         <table class="min-w-full shadow-md rounded">
+          <!-- Field names for the table -->
           <thead class="bg-gray-50 text-xl">
             <tr>
               <th class="p-4 text-center">Event Name</th>
               <th class="p-4 text-center">Number of Attendees (Clients)</th>
             </tr>
           </thead>
+          <!-- Event and number of attendees/clients data for the table -->
           <tbody class="divide-y divide-gray-300">
             <tr v-for="event in eventsData" :key="event._id">
               <td class="p-2 text-center">{{ event.eventName }}</td>
