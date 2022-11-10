@@ -1,5 +1,10 @@
 const express = require("express"); 
-const router = express.Router(); 
+const router = express.Router();
+const { check, validationResult } = require("express-validator");
+const errorHelper = (res, error, code, msg) => {
+    if (error) return res.status(code).jsonp({ "msg": msg});
+    return res.json(data);
+}
 
 //importing data model schemas
 let { primarydata } = require("../models/models");
@@ -73,35 +78,68 @@ router.get("/events/:id", (req, res, next) => {
 
 
 //POST
-router.post("/", (req, res, next) => { 
+// Adding validation checks for posting primary data
+router.post("/", [
+    check("firstName")
+        .isString()
+        .isAlpha()
+        .not().isEmpty().withMessage("first name is required"),
+    check("lastName")
+        .isString()
+        .isAlpha()
+        .not().isEmpty().withMessage("last name is required"),
+    check("email")
+        .isEmail().withMessage("must be in email format"),
+    check("address.city")
+        .isString()
+        .not().isEmpty().withMessage("city is required"),
+    check("address.zip")
+        .isNumeric(),
+], (req, res, next) => { 
+    // Returns a 422 error if one of the validation checks aren't met
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(422).jsonp(errors.array())
+    }
     // Setting the organization ID of the added client to be the organization of the current organziation instance
     req.body.organization_id = process.env.ORG
+    // Returns a 500 error with a json response
     primarydata.create(req.body, (error, data) => { 
-            if (error) {
-                return next(error);
-            } else {
-                res.json(data); 
-            }
-        }
-    );
+       return errorHelper(res, error, 500, "database error")
+    });
     primarydata.createdAt;
     primarydata.updatedAt;
     primarydata.createdAt instanceof Date;
 });
 
 //PUT update (make sure req body doesn't have the id)
-router.put("/:id", (req, res, next) => { 
-    primarydata.findOneAndUpdate( 
-        { _id: req.params.id, }, 
-        req.body,
-        (error, data) => {
-            if (error) {
-                return next(error);
-            } else {
-                res.json(data);
-            }
-        }
-    );
+// Adding validation checks for updating primary data
+router.put("/:id",[
+    check("firstName")
+        .isString()
+        .isAlpha()
+        .not().isEmpty().withMessage("first name is required"),
+    check("lastName")
+        .isString()
+        .isAlpha()
+        .not().isEmpty().withMessage("last name is required"),
+    check("email")
+        .isEmail().withMessage("must be in email format"),
+    check("address.city")
+        .isString()
+        .not().isEmpty().withMessage("city is required"),
+    check("address.zip")
+        .isNumeric(),
+], (req, res, next) => { 
+    // Returns a 422 error if one of the validation checks aren't met
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(422).jsonp(errors.array())
+    }
+    // Returns a 500 error with a json response
+    primarydata.findOneAndUpdate( { _id: req.params.id, }, req.body,(error, data) => {
+        return errorHelper(res, error, 500, "database error")
+    });
 });
 
 //DELETE (deletes a client by ID)

@@ -1,5 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { check, validationResult } = require("express-validator");
+const errorHelper = (res, error, code, msg) => {
+    if (error) return res.status(code).jsonp({ "msg": msg});
+    return res.json(data);
+}
 
 //importing data model schemas
 let { eventdata } = require("../models/models");
@@ -88,19 +93,27 @@ router.get("/client/:id", (req, res, next) => {
 });
 
 //POST
-router.post("/", (req, res, next) => { 
+// Adding validation checks for posting event data
+router.post("/", [
+    check("eventName")
+        .isString()
+        .not().isEmpty().withMessage("event name is required"),
+    check("date")
+        .not().isEmpty().withMessage("date is required"),
+    check("address.zip")
+        .isNumeric(),
+], (req, res, next) => { 
+    // Returns a 422 error if one of the validation checks aren't met
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(422).jsonp(errors.array())
+    }
     // Setting the organization ID of the added event to be the organization of the current organziation instance
     req.body.organization_id = process.env.ORG
-    eventdata.create( 
-        req.body, 
-        (error, data) => { 
-            if (error) {
-                return next(error);
-            } else {
-                res.json(data);
-            }
-        }
-    );
+    eventdata.create(req.body, (error, data) => { 
+        // Returns a 500 error with a json response
+        return errorHelper(res, error, 500, "database error")
+    });
 });
 
 //PUT add attendee to event
@@ -131,18 +144,28 @@ router.put("/addAttendee/:id", (req, res, next) => {
 });
 
 //PUT
-router.put("/:id", (req, res, next) => {
-    eventdata.findOneAndUpdate(
-        { _id: req.params.id },
-        req.body,
-        (error, data) => {
-            if (error) {
-                return next(error);
-            } else {
-                res.json(data);
-            }
-        }
-    );
+// Adding validation checks for updating event data
+router.put("/:id",  [
+    check("eventName")
+        .isString()
+        .not().isEmpty().withMessage("event name is required"),
+    check("date")
+        .not().isEmpty().withMessage("date is required"),
+    check("address.city")
+        .isString()
+        .not().isEmpty().withMessage("city is required"),
+    check("address.zip")
+        .isNumeric(),
+], (req, res, next) => {
+    // Returns a 422 error if one of the validation checks aren't met
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(422).jsonp(errors.array())
+    }
+    // Returns a 500 error with a json response
+    eventdata.findOneAndUpdate({ _id: req.params.id },req.body,(error, data) => {
+        return errorHelper(res, error, 500, "database error")  
+    });
 });
 
 
