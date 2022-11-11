@@ -97,11 +97,11 @@ router.get("/client/:id", (req, res, next) => {
 router.post("/", [
     check("eventName")
         .isString()
+        .isAlpha()
         .not().isEmpty().withMessage("event name is required"),
     check("date")
+        .isDate()
         .not().isEmpty().withMessage("date is required"),
-    check("address.zip")
-        .isNumeric(),
 ], (req, res, next) => { 
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)
@@ -148,14 +148,11 @@ router.put("/addAttendee/:id", (req, res, next) => {
 router.put("/:id",  [
     check("eventName")
         .isString()
+        .isAlpha()
         .not().isEmpty().withMessage("event name is required"),
     check("date")
-        .not().isEmpty().withMessage("date is required"),
-    check("address.city")
-        .isString()
-        .not().isEmpty().withMessage("city is required"),
-    check("address.zip")
-        .isNumeric(),
+        .isDate()
+        .not().isEmpty().withMessage("date is required")
 ], (req, res, next) => {
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)

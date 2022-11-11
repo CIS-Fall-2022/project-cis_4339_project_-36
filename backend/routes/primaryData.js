@@ -88,13 +88,13 @@ router.post("/", [
         .isString()
         .isAlpha()
         .not().isEmpty().withMessage("last name is required"),
-    check("email")
-        .isEmail().withMessage("must be in email format"),
+    check("phoneNumbers.primaryPhone")
+        .isNumeric()
+        .not().isEmpty().withMessage("phone number is required"),
     check("address.city")
         .isString()
-        .not().isEmpty().withMessage("city is required"),
-    check("address.zip")
-        .isNumeric(),
+        .isAlpha()
+        .not().isEmpty().withMessage("city is required")
 ], (req, res, next) => { 
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)
@@ -105,7 +105,8 @@ router.post("/", [
     req.body.organization_id = process.env.ORG
     // Returns a 500 error with a json response
     primarydata.create(req.body, (error, data) => { 
-       return errorHelper(res, error, 500, "database error")
+        if(error) return errorHelper(res, error, 500, "database error")
+        return res.json(data)
     });
     primarydata.createdAt;
     primarydata.updatedAt;
@@ -123,13 +124,13 @@ router.put("/:id",[
         .isString()
         .isAlpha()
         .not().isEmpty().withMessage("last name is required"),
-    check("email")
-        .isEmail().withMessage("must be in email format"),
+    check("phoneNumbers.primaryPhone")
+        .isNumeric()
+        .not().isEmpty().withMessage("phone number is required"),
     check("address.city")
         .isString()
-        .not().isEmpty().withMessage("city is required"),
-    check("address.zip")
-        .isNumeric(),
+        .isAlpha()
+        .not().isEmpty().withMessage("city is required")
 ], (req, res, next) => { 
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)
