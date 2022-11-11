@@ -1,6 +1,6 @@
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, email, alpha, numeric } from "@vuelidate/validators";
+import { required, email, numeric } from "@vuelidate/validators";
 import axios from "axios";
 export default {
   setup() {
@@ -11,6 +11,8 @@ export default {
   },
   data() {
     return {
+      error: false,
+      serverErrors: {},
       client: {
         firstName: "",
         middleName: "",
@@ -38,13 +40,15 @@ export default {
       const isFormCorrect = await this.v$.$validate();
       // If no errors found. isFormCorrect = True then the form is submitted
       if (isFormCorrect) {
-        let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata`;
+        let apiURL = import.meta.env.VITE_ROOT_API + `/primaryData`;
         axios
           .post(apiURL, this.client)
           .then(() => {
             alert("Client has been succesfully added.");
             this.$router.push("/findclient");
             this.client = {
+              error: false,
+              errorArray: [],
               firstName: "",
               middleName: "",
               lastName: "",
@@ -65,7 +69,26 @@ export default {
             };
           })
           .catch((error) => {
-            console.log(error);
+            this.error = true
+            if(error.response.status === 422){
+            // Request made and server responded with validation errors
+              this.errorArray = error.response.data
+              let tempError;
+              for (var i = 0; i < this.errorArray.length; i++){
+                tempError = this.errorArray[i];
+                if(this.serverErrors[tempError.param]){
+                  this.serverErrors[tempError.param].push({id: `${tempError.param}${tempError.msg}`, msg:tempError.msg})
+                } else{
+                  this.serverErrors[tempError.param] = [{id: `${tempError.param}${tempError.msg}`, msg:tempError.msg}]
+                }
+              }
+            }else if(error.request){
+              // Request was made but no response aka server down
+              alert("Request was made but no response aka server down")
+            }else{
+              // Something seriously wrong
+              alert("Something seriously wrong")
+            }
           });
       }
     },
@@ -74,8 +97,8 @@ export default {
   validations() {
     return {
       client: {
-        firstName: { required, alpha },
-        lastName: { required, alpha },
+        firstName: { required },
+        lastName: { required },
         email: { email },
         address: {
           city: { required },
@@ -116,6 +139,15 @@ export default {
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
+              <span v-if="error">
+                <span class="text-black" v-if="serverErrors.firstName">
+                  <p
+                    class="text-red-700"
+                    v-for="err of serverErrors.firstName"
+                    :key="err.id"
+                  >{{ err.msg }}!</p>
+                </span>
+              </span>
             </label>
           </div>
 
@@ -149,6 +181,15 @@ export default {
                   v-for="error of v$.client.lastName.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
+              </span>
+              <span v-if="error">
+                <span class="text-black" v-if="serverErrors.lastName">
+                  <p
+                    class="text-red-700"
+                    v-for="err of serverErrors.lastName"
+                    :key="err.id"
+                  >{{ err.msg }}!</p>
+                </span>
               </span>
             </label>
           </div>

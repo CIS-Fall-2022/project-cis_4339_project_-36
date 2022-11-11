@@ -1,3 +1,97 @@
+<script>
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+import axios from "axios";
+export default {
+  setup() {
+    return { v$: useVuelidate({ $autoDirty: true }) };
+  },
+  data() {
+    return {
+      error: false,
+      serverErrors: {},
+      checkedServices: [],
+      event: {
+        eventName: "",
+        services: [],
+        date: "",
+        address: {
+          line1: "",
+          line2: "",
+          city: "",
+          county: "",
+          zip: "",
+        },
+        description: "",
+      },
+    };
+  },
+  methods: {
+    async handleSubmitForm() {
+      // Checks to see if there are any errors in validation
+      const isFormCorrect = await this.v$.$validate();
+      // If no errors found. isFormCorrect = True then the form is submitted
+      if (isFormCorrect) {
+        this.event.services = this.checkedServices;
+        let apiURL = import.meta.env.VITE_ROOT_API + `/eventData`;
+        axios
+          .post(apiURL, this.event)
+          .then(() => {
+            alert("Event has been added.");
+            this.$router.push("/findEvents");
+            this.client = {
+              error: false,
+              errorArray: [],
+              eventName: "",
+              services: [],
+              date: "",
+              address: {
+                line1: "",
+                line2: "",
+                city: "",
+                county: "",
+                zip: "",
+              },
+              description: "",
+            };
+            this.checkedServices = [];
+          })
+          .catch((error) => {
+            this.error = true
+            if(error.response.status === 422){
+            // Request made and server responded with validation errors
+              this.errorArray = error.response.data
+              let tempError;
+              for (var i = 0; i < this.errorArray.length; i++){
+                tempError = this.errorArray[i];
+                if(this.serverErrors[tempError.param]){
+                  this.serverErrors[tempError.param].push({id: `${tempError.param}${tempError.msg}`, msg:tempError.msg})
+                } else{
+                  this.serverErrors[tempError.param] = [{id: `${tempError.param}${tempError.msg}`, msg:tempError.msg}]
+                }
+              }
+            }else if(error.request){
+              // Request was made but no response aka server down
+              alert("Request was made but no response aka server down")
+            }else{
+              // Something seriously wrong
+              alert("Something seriously wrong")
+            }
+          });
+      }
+    },
+  },
+  // sets validations for the various data properties
+  validations() {
+    return {
+      event: {
+        eventName: { required },
+        date: { required },
+      },
+    };
+  },
+};
+</script>
 <template>
   <main>
     <div>
@@ -27,6 +121,15 @@
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
+              <span v-if="error">
+                <span class="text-black" v-if="serverErrors.eventName">
+                  <p
+                    class="text-red-700"
+                    v-for="err of serverErrors.eventName"
+                    :key="err.id"
+                  >{{ err.msg }}!</p>
+                </span>
+              </span>
             </label>
           </div>
 
@@ -46,6 +149,15 @@
                   v-for="error of v$.event.date.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
+              </span>
+              <span v-if="error">
+                <span class="text-black" v-if="serverErrors.date">
+                  <p
+                    class="text-red-700"
+                    v-for="err of serverErrors.date"
+                    :key="err.id"
+                  >{{ err.msg }}!</p>
+                </span>
               </span>
             </label>
           </div>
@@ -197,74 +309,3 @@
     </div>
   </main>
 </template>
-<script>
-import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-import axios from "axios";
-export default {
-  setup() {
-    return { v$: useVuelidate({ $autoDirty: true }) };
-  },
-  data() {
-    return {
-      checkedServices: [],
-      event: {
-        eventName: "",
-        services: [],
-        date: "",
-        address: {
-          line1: "",
-          line2: "",
-          city: "",
-          county: "",
-          zip: "",
-        },
-        description: "",
-      },
-    };
-  },
-  methods: {
-    async handleSubmitForm() {
-      // Checks to see if there are any errors in validation
-      const isFormCorrect = await this.v$.$validate();
-      // If no errors found. isFormCorrect = True then the form is submitted
-      if (isFormCorrect) {
-        this.event.services = this.checkedServices;
-        let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata`;
-        axios
-          .post(apiURL, this.event)
-          .then(() => {
-            alert("Event has been added.");
-            this.$router.push("/findEvents");
-            this.client = {
-              eventName: "",
-              services: [],
-              date: "",
-              address: {
-                line1: "",
-                line2: "",
-                city: "",
-                county: "",
-                zip: "",
-              },
-              description: "",
-            };
-            this.checkedServices = [];
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    },
-  },
-  // sets validations for the various data properties
-  validations() {
-    return {
-      event: {
-        eventName: { required },
-        date: { required },
-      },
-    };
-  },
-};
-</script>
