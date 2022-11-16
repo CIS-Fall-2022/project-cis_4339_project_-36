@@ -44,6 +44,7 @@ export default {
         axios
           .post(apiURL, this.client)
           .then(() => {
+            alert("Client has been added.");
             this.$router.push("/findclient");
             this.client = {
               error: false,
