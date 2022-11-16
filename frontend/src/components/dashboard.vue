@@ -11,8 +11,8 @@
         </div>
         <br>
         <!-- Bar Chart for the number of attendeees for each event -->
-        <div>
-          <canvas id="eventsChart" width="400" height="400" ></canvas>
+        <div class="chartBox">
+          <canvas id="eventsChart"></canvas>
         </div>
         <br>
         <!-- Table of list of events and number of attendees in the last 2 months -->
@@ -28,7 +28,7 @@
           <tbody class="divide-y divide-gray-300">
             <tr v-for="event in eventsData" :key="event._id">
               <td class="p-2 text-center">{{ event.eventName }}</td>
-              <td class="p-2 text-center">{{ countAttendees(event.attendees) }}</td>
+              <td class="p-2 text-center">{{ event.attendees.length }}</td>
             </tr>
           </tbody>
         </table>
@@ -51,63 +51,59 @@ export default {
       numAttendees: []
     }
   },
-  created() {
+  mounted() {
+    const ctx = document.getElementById('eventsChart');
+
     // getting eventsData
-    let apiURL = `http://localhost:3000/eventData/event-data`;
+    let apiURL = import.meta.env.VITE_ROOT_API + `/eventData/event-data`;
     axios.get(apiURL).then(res => {
       this.eventsData = res.data;
+      this.labels = res.data.map((event) => event.eventName);
+      this.numAttendees = res.data.map((event) => event.attendees.length);
+      // create a new chart (bar chart)
+      const eventsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: this.labels,
+          datasets: [{
+            label: 'Number of Attendees (Clients)',
+            data: this.numAttendees,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
     }).catch(error => {
       console.log(error)
     });
-  },
-  mounted() {
-    // use the function to fetch data
-    this.fetchData();
 
-    const ctx = document.getElementById('eventsChart');
-
-    // create a new chart (bar chart)
-    const eventsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: this.labels,
-        datasets: [{
-          label: 'Number of Attendees (Clients)',
-          data: this.numAttendees,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-
-    // call the eventsChart
+    // call the bar chart
     eventsChart;
   },
-  methods: {
-    // function to count the number of attendees in the attendees array from an event
-    countAttendees: function(eventAttendees) {
-      // return the length of array with attendees of an event
-      return eventAttendees.length;
-    },
-    // function to fetch data for the labels and the number of attendees
-    async fetchData() {
-      const url = `http://localhost:3000/eventData/event-data`;
-      const response = await axios.get(url);
-      this.labels = response.data.map((event) => event.eventName);
-      this.numAttendees = response.data.map((event) => event.attendees.length);
-    }
-  }
 };
 </script>
+
+<style type="text/css">
+  .chartBox {
+    width: 600px;
+    height: 400px;
+    margin: 0 auto;
+  }
+</style>
