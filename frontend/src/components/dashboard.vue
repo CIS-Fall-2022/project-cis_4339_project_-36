@@ -10,6 +10,7 @@
           <h2 class="text-2xl font-bold text-red-700">List of Events and Number of Attendees (Clients) in the Last 2 Months</h2>
         </div>
         <br>
+        <!-- Bar Chart for the number of attendeees for each event -->
         <div>
           <canvas id="eventsChart" width="400" height="400" ></canvas>
         </div>
@@ -60,10 +61,12 @@ export default {
     });
   },
   mounted() {
+    // use the function to fetch data
     this.fetchData();
 
     const ctx = document.getElementById('eventsChart');
 
+    // create a new chart (bar chart)
     const eventsChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -98,6 +101,7 @@ export default {
       // return the length of array with attendees of an event
       return eventAttendees.length;
     },
+    // function to fetch data for the labels and the number of attendees
     async fetchData() {
       const url = `http://localhost:3000/eventData/event-data`;
       const response = await axios.get(url);
