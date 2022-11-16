@@ -1,9 +1,33 @@
 const express = require("express"); 
 const router = express.Router();
-const { check, validationResult } = require("express-validator");
+const { body, check, checkSchema, validationResult } = require("express-validator");
 const errorHelper = (res, error, code, msg) => {
     if (error) return res.status(code).jsonp({ "msg": msg});
     return res.json(data);
+}
+
+const intakeFormSchema = {
+    firstName: {
+        isString: true,
+        isAlpha: true,
+        isEmpty: false,
+        errorMessage: "first name is required"
+    },
+    lastName: {
+        isString: true,
+        isAlpha: true,
+        isEmpty: false,
+        errorMessage: "last name is required"
+    },
+    email: {
+        isEmail: true,
+    },
+    "phoneNumbers.*.primaryPhone": {
+        isMobilePhone: true
+    },
+    "address.city": {
+        isEmpty: false,
+    }
 }
 
 //importing data model schemas
@@ -79,23 +103,7 @@ router.get("/events/:id", (req, res, next) => {
 
 //POST
 // Adding validation checks for posting primary data
-router.post("/", [
-    check("firstName")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("first name is required"),
-    check("lastName")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("last name is required"),
-    check("phoneNumbers.primaryPhone")
-        .isNumeric()
-        .not().isEmpty().withMessage("phone number is required"),
-    check("address.city")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("city is required")
-], (req, res, next) => { 
+router.post("/", checkSchema(intakeFormSchema), (req, res, next) => { 
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)
     if(!errors.isEmpty()) {
@@ -115,23 +123,7 @@ router.post("/", [
 
 //PUT update (make sure req body doesn't have the id)
 // Adding validation checks for updating primary data
-router.put("/:id",[
-    check("firstName")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("first name is required"),
-    check("lastName")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("last name is required"),
-    check("phoneNumbers.primaryPhone")
-        .isNumeric()
-        .not().isEmpty().withMessage("phone number is required"),
-    check("address.city")
-        .isString()
-        .isAlpha()
-        .not().isEmpty().withMessage("city is required")
-], (req, res, next) => { 
+router.put("/:id", (req, res, next) => { 
     // Returns a 422 error if one of the validation checks aren't met
     const errors = validationResult(req)
     if(!errors.isEmpty()) {

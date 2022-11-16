@@ -1,6 +1,6 @@
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, email, numeric } from "@vuelidate/validators";
+import { required, email } from "@vuelidate/validators";
 import axios from "axios";
 export default {
   setup() {
@@ -99,13 +99,13 @@ export default {
       client: {
         firstName: { required },
         lastName: { required },
-        email: { email },
+        email: { required, email },
         address: {
           city: { required },
         },
         phoneNumbers: [
           {
-            primaryPhone: { required, numeric },
+            primaryPhone: { required },
           },
         ],
       },
