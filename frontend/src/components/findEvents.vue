@@ -150,7 +150,7 @@ export default {
     },
     deleteEvent(eventID) {
       // Set delete API to variable
-      let apiURL = `http://localhost:3000/eventData/${eventID}`;
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventData/${eventID}`;
       // Set index of queryData of the event to be deleted to variable
       let index = this.queryData.findIndex(i => i._id === eventID);
 

@@ -158,7 +158,7 @@ export default {
     },
     deleteClient(clientID) {
       // Set delete API to variable
-      let apiURL = `http://localhost:3000/primaryData/${clientID}`;
+      let apiURL = import.meta.env.VITE_ROOT_API + `/primaryData/${clientID}`;
       // Set index of queryData of the client to be deleted to variable
       let index = this.queryData.findIndex(i => i._id === clientID);
 

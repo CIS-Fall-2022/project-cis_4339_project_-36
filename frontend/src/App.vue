@@ -68,7 +68,7 @@ export default {
     }
   },
   created() {
-    let apiURL = 'http://localhost:3000/orgData/current_org';
+    let apiURL = import.meta.env.VITE_ROOT_API + `/orgData/current_org`;
     axios.get(apiURL).then(res => {
       this.currentOrg = res.data;
     }).catch(error => {
