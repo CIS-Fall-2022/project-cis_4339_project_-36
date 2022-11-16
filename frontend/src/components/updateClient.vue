@@ -48,7 +48,7 @@ export default {
     axios
       .get(
         import.meta.env.VITE_ROOT_API +
-          `/primarydata/id/${this.$route.params.id}`
+          `/primaryData/id/${this.$route.params.id}`
       )
       .then((resp) => {
         let data = resp.data[0];
@@ -69,7 +69,7 @@ export default {
     axios
       .get(
         import.meta.env.VITE_ROOT_API +
-          `/eventdata/client/${this.$route.params.id}`
+          `/eventData/client/${this.$route.params.id}`
       )
       .then((resp) => {
         let data = resp.data;
@@ -80,7 +80,7 @@ export default {
           });
         });
       });
-    axios.get(import.meta.env.VITE_ROOT_API + `/eventdata`).then((resp) => {
+    axios.get(import.meta.env.VITE_ROOT_API + `/eventData`).then((resp) => {
       let data = resp.data;
       for (let i = 0; i < data.length; i++) {
         this.eventData.push({
@@ -96,7 +96,7 @@ export default {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
     handleClientUpdate() {
-      let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${this.id}`;
+      let apiURL = import.meta.env.VITE_ROOT_API + `/primaryData/${this.id}`;
       axios.put(apiURL, this.client).then(() => {
         alert("Update has been saved.");
         this.$router.back().catch((error) => {
@@ -107,13 +107,13 @@ export default {
     addToEvent() {
       this.eventsChosen.forEach((event) => {
         let apiURL =
-          import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
+          import.meta.env.VITE_ROOT_API + `/eventData/addAttendee/` + event._id;
         axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
           this.clientEvents = [];
           axios
             .get(
               import.meta.env.VITE_ROOT_API +
-                `/eventdata/client/${this.$route.params.id}`
+                `/eventData/client/${this.$route.params.id}`
             )
             .then((resp) => {
               let data = resp.data;
