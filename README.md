@@ -4,20 +4,13 @@ Requirements:
 
 This project uses NodeJS and MongoDB.
 
-## Backend Node Application
-```
-cd backend
-```
-Follow instructions in backend README
+## HOW TO RUN CLOUD BASED APP:
 
-## Frontend Vue 3 Application
 ```
-cd frontend
+1.) Open terminal
+2.) npm start
+3.) Link to cloud-deployed app: [CISProject4339](https://fullproject36-4339.herokuapp.com/)
 ```
-Follow instructions in frontend README
 
 ### BACKEND API DOCUMENTATION CAN BE FOUND BELOW AT:
 https://documenter.getpostman.com/view/15329472/2s83zfRkVK
-
-### LINK TO CLOUD DEPLOYED APP:
-https://fullproject36-4339.herokuapp.com/
