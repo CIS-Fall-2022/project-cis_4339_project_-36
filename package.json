@@ -4,7 +4,7 @@
     "description": "",
     "scripts": {
       "build-frontend": "cd frontend && npm i && npm run build",
-      "run-backend": "cd backend && npm start",
+      "run-backend": "cd backend && npm i && npm start",
       "start": "npm run build-frontend && npm run run-backend"
     },
     "author": "",
