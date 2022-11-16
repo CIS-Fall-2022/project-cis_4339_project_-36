@@ -9,7 +9,6 @@ const errorHelper = (res, error, code, msg) => {
 const eventSchema = {
     eventName: {
         isString: true,
-        isAlpha: true,
         isEmpty: false,
         errorMessage: "event name is required"
     },
