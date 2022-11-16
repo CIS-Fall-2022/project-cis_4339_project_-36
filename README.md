@@ -7,10 +7,11 @@ This project uses NodeJS and MongoDB.
 ## HOW TO RUN CLOUD BASED APP:
 
 ```
-1.) Open terminal
-2.) npm start
+1.) Create .env files for frontend and backend
+2.) Open terminal
+3.) npm start
 ```
-3.) Link to cloud-deployed app: [CISProject4339](https://fullproject36-4339.herokuapp.com/)
+4.) Link to cloud-deployed app: [CISProject4339](https://fullproject36-4339.herokuapp.com/)
 
 
 ### BACKEND API DOCUMENTATION CAN BE FOUND BELOW AT:
