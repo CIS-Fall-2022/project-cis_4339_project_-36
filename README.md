@@ -18,3 +18,6 @@ Follow instructions in frontend README
 
 ### BACKEND API DOCUMENTATION CAN BE FOUND BELOW AT:
 https://documenter.getpostman.com/view/15329472/2s83zfRkVK
+
+### LINK TO CLOUD DEPLOYED APP:
+https://fullproject36-4339.herokuapp.com/
