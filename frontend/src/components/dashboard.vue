@@ -52,9 +52,10 @@ export default {
     }
   },
   mounted() {
+    // Get context of the canvas element
     const ctx = document.getElementById('eventsChart');
 
-    // getting eventsData
+    // getting eventsData, labels, and number of attendees for each event
     let apiURL = import.meta.env.VITE_ROOT_API + `/eventData/event-data`;
     axios.get(apiURL).then(res => {
       this.eventsData = res.data;
