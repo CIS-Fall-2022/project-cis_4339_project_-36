@@ -154,7 +154,6 @@ router.put("/addAttendee/:id", (req, res, next) => {
 router.put("/:id",  [
     check("eventName")
         .isString()
-        .isAlpha()
         .not().isEmpty().withMessage("event name is required"),
     check("date")
         .isDate()
@@ -167,7 +166,8 @@ router.put("/:id",  [
     }
     // Returns a 500 error with a json response
     eventdata.findOneAndUpdate({ _id: req.params.id },req.body,(error, data) => {
-        return errorHelper(res, error, 500, "database error")  
+        if(error) return errorHelper(res, error, 500, "database error")
+        return res.json(data)  
     });
 });
 

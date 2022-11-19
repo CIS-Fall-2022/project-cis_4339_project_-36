@@ -131,7 +131,8 @@ router.put("/:id", (req, res, next) => {
     }
     // Returns a 500 error with a json response
     primarydata.findOneAndUpdate( { _id: req.params.id, }, req.body,(error, data) => {
-        return errorHelper(res, error, 500, "database error")
+        if(error) return errorHelper(res, error, 500, "database error")
+        return res.json(data)
     });
 });
 
