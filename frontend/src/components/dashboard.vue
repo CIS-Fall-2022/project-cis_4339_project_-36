@@ -96,6 +96,7 @@ export default {
     });
 
     // call the bar chart
+    let eventsChart;
     eventsChart;
   },
 };
